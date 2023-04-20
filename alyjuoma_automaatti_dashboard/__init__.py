@@ -16,4 +16,8 @@ def create_app():
     def admin():
         return f"db: {app.config['DATABASE_HOST']} {app.config['DATABASE_NAME']} {app.config['DATABASE_USER']} {app.config['DATABASE_PASSWORD']}"
     
+
+    from . import db
+    db.init_app(app)
+        
     return app
