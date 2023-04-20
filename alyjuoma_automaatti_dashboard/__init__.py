@@ -19,5 +19,8 @@ def create_app():
 
     from . import db
     db.init_app(app)
-        
+
+    from . import data
+    app.register_blueprint(data.bp)
+
     return app
