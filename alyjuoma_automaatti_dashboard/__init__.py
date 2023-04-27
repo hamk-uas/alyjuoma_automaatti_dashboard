@@ -3,10 +3,13 @@ import os
 from flask import Flask
 
 
-def create_app():
+def create_app(test_config=False):
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config.from_pyfile('config.py')
+    if test_config is False:
+        app.config.from_pyfile('config.py')
+    else:
+        app.config.from_pyfile('config_test.py')
 
     @app.route("/hello")
     def hello():
