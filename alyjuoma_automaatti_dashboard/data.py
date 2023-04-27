@@ -44,3 +44,26 @@ def write():
         parameter_value
         ])
 
+
+@bp.route('/all', methods=['GET'])
+def all():
+    db = get_db()
+    cur = db.cursor()    
+
+    cur.execute("SELECT * FROM sensor_data")
+
+    result = cur.fetchall()
+    data = []
+
+    for line in result:
+        data.append({
+            "id": line[0],
+            "dtime": line[1],
+            "farm_id": line[2],
+            "station_id": line[3],
+            "parameter_type": line[4],
+            "parameter_value": line[5]
+        })
+    
+    return jsonify(success=True, result=data)
+
