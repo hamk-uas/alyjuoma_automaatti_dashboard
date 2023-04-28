@@ -12,7 +12,7 @@ cur = conn.cursor()
 cur.execute('DROP TABLE IF EXISTS sensor_data;')
 
 cur.execute('CREATE TABLE sensor_data (id serial PRIMARY KEY,'
-                                 'dtime TIMESTAMP NOT NULL,'
+                                 'dtime DATETIME(6) NOT NULL,'
                                  'farm_id TEXT NOT NULL,'
                                  'station_id TEXT NOT NULL,'
                                  'parameter_type TEXT NOT NULL,'
