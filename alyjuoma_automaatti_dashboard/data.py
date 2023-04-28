@@ -16,10 +16,9 @@ def write():
     db = get_db()
 
     data_string = request.data.decode('utf8')
-    dtime, farm_id, station_id, parameter_type, parameter_value = data_string.split(';')
-    print(dtime, farm_id, station_id, parameter_type, parameter_value)
+    farm_id, station_id, parameter_type, parameter_value = data_string.split(';')
 
-    dtime = datetime.datetime.strptime(dtime, '%d.%m.%Y %H.%M.%S%f')
+    dtime = datetime.datetime.now()
     parameter_value = float(parameter_value)
 
     print(dtime, farm_id, station_id, parameter_type, parameter_value)
@@ -58,7 +57,7 @@ def all():
     for line in result:
         data.append({
             "id": line[0],
-            "dtime": line[1],
+            "dtime": datetime.datetime.strftime(line[1], '%Y-%m-%d %H:%M:%S.%f'),
             "farm_id": line[2],
             "station_id": line[3],
             "parameter_type": line[4],
