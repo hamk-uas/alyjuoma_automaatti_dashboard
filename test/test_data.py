@@ -1,6 +1,6 @@
-import pytest
 import datetime
 import json
+from freezegun import freeze_time
 
 from alyjuoma_automaatti_dashboard.db import get_db
 
@@ -26,10 +26,8 @@ def test_all(client, app):
         r_data_sample_two = r_data["result"][1]
 
         assert response.status_code == 200
-        print("Response OK")
 
         assert len(r_data['result']) == 2
-        print("Number of data entries correct")
 
         assert r_data_sample_one == {
             "id": 1,
@@ -39,7 +37,6 @@ def test_all(client, app):
             "parameter_type": "Temp3",
             "parameter_value": 22.453
         }
-        print("First data entry is correct.")
 
         assert r_data_sample_two == {
             "id": 2,
@@ -49,4 +46,23 @@ def test_all(client, app):
             "parameter_type": "Temp3",
             "parameter_value": 12.009
         }
-        print("Second data entry is correct.")
+
+
+@freeze_time("2023-05-01 12:34:56.789012")
+def test_write(client, app):
+    with app.app_context():
+        response = client.post('/data/write', data='ÄÄJ;ST1;Temp3;22.453')
+
+        assert response.status_code == 200
+
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM sensor_data')
+        data = cur.fetchall()
+
+        assert len(data) == 1
+
+        data = list(data[0])
+        data[1] = datetime.datetime.strftime(data[1], '%Y-%m-%d %H:%M:%S.%f')
+
+        assert data == [1, "2023-05-01 12:34:56.789012", "ÄÄJ", "ST1", "Temp3", 22.453]
