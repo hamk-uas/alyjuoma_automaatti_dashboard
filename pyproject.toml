@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = [
+  "."
+]
+
+[tool.coverage.run]
+branch = true
+source = ["alyjuoma_automaatti_dashboard"]
