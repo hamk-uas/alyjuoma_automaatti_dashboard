@@ -5,7 +5,7 @@ from freezegun import freeze_time
 from alyjuoma_automaatti_dashboard.db import get_db
 
 
-def test_all(client, app):
+def test_data_all(client, app):
     date_one_obj = datetime.datetime.strptime("2023-04-11 14:04:02.140000", '%Y-%m-%d %H:%M:%S.%f')
     date_two_obj = datetime.datetime.strptime("2023-04-12 12:54:33.920000", '%Y-%m-%d %H:%M:%S.%f')
 
@@ -49,7 +49,7 @@ def test_all(client, app):
 
 
 @freeze_time("2023-05-01 12:34:56.789012")
-def test_write(client, app):
+def test_data_write(client, app):
     with app.app_context():
         response = client.post('/data/write', data='ÄÄJ;ST1;Temp3;22.453')
 
@@ -68,7 +68,7 @@ def test_write(client, app):
         assert data == [1, "2023-05-01 12:34:56.789012", "ÄÄJ", "ST1", "Temp3", 22.453]
 
 
-def test_splice(client, app):
+def test_data_slice(client, app):
     date_one_obj = datetime.datetime.strptime("2023-04-11 14:04:02.140000", '%Y-%m-%d %H:%M:%S.%f')
     date_two_obj = datetime.datetime.strptime("2023-04-12 15:32:33.020000", '%Y-%m-%d %H:%M:%S.%f')
     date_three_obj = datetime.datetime.strptime("2023-04-13 14:04:02.340000", '%Y-%m-%d %H:%M:%S.%f')
