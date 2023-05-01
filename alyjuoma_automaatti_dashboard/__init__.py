@@ -26,4 +26,7 @@ def create_app(test_config=False):
     from . import data
     app.register_blueprint(data.bp)
 
+    from . import download
+    app.register_blueprint(download.bp)
+
     return app
