@@ -12,7 +12,7 @@ bp = Blueprint('data', __name__, url_prefix='/data')
 
 
 @bp.route('/write', methods=['POST'])
-def write():
+def data_write():
     db = get_db()
 
     data_string = request.data.decode('utf8')
@@ -45,7 +45,7 @@ def write():
 
 
 @bp.route('/all', methods=['GET'])
-def all():
+def data_all():
     db = get_db()
     cur = db.cursor()    
 
@@ -69,7 +69,7 @@ def all():
 
 
 @bp.route('/slice', methods=['POST'])
-def data_slice():
+def data_slice(s=None):
     '''
     Format:
 
@@ -84,8 +84,10 @@ def data_slice():
 
     db = get_db()
     cur = db.cursor()
-
-    req = request.get_json()
+    if s == None:
+        req = request.get_json()
+    else: 
+        req = s
 
     query = "SELECT * FROM sensor_data WHERE "
     cols = list(req.keys())
