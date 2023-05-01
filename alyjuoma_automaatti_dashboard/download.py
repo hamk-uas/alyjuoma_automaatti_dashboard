@@ -25,4 +25,19 @@ def download_all():
     os.remove('data.csv')
 
     return response
-    
+
+
+@bp.route('/slice', methods=['POST'])
+def download_slice():
+    req = request.get_json()
+    data = data_slice(req).get_json()
+    data = data["result"]
+
+    downloadable(data)
+    response = make_response(open('data.csv').read())
+    response.headers['Content-Disposition'] = 'attachment; filename=data.csv'
+    response.mimetype = 'text/csv'
+
+    os.remove('data.csv')
+
+    return response
