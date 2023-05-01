@@ -64,7 +64,7 @@ def all():
             "parameter_value": line[5]
         })
     
-    return jsonify(success=True, result=data)
+    return jsonify(result=data)
 
 
 
@@ -142,4 +142,4 @@ def data_slice():
         })
     
 
-    return data
+    return jsonify(result=data)
