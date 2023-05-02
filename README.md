@@ -36,4 +36,4 @@ The backend API is broken down into two modules:
     - Returns all data from database as **.csv** file
   - ```/download/slice``` - ***POST***
     - Returns a slice of data from database based on format defined in JSON request as a **.csv** file.
-    - Requests **must** follow the same format as ```/data/slice``` 
+    - Requests **must** follow the same format as ```/data/slice```
