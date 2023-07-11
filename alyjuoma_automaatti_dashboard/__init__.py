@@ -17,9 +17,9 @@ def create_app(test_config=False):
     def hello():
         return 'Hello, World!'
     
-    @app.route("/admin")
-    def admin():
-        return f"db: {app.config['DATABASE_HOST']} {app.config['DATABASE_NAME']} {app.config['DATABASE_USER']} {app.config['DATABASE_PASSWORD']}"
+    # @app.route("/admin")
+    # def admin():
+    #     return f"db: {app.config['DATABASE_HOST']} {app.config['DATABASE_NAME']} {app.config['DATABASE_USER']} {app.config['DATABASE_PASSWORD']}"
     
 
     from . import db
