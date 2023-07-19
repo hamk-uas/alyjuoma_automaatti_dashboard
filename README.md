@@ -11,7 +11,7 @@ The backend API is broken down into two modules:
 - **'data'** module (via ```'/data/...'```):
   - ```'/data/write'``` - ***POST***
     - Endpoint for writing to database
-    - Data **must** follow the ```b'farm_id;station_id;parameter_type;parameter_value'``` format
+    - Data **must** follow the ```b'farm_id;station_id;realtime;parameter_type;parameter_value'``` format
   - ```'/data/all'``` - ***GET***
     - Returns all data from database as JSON response
   - ```'/data/slice'``` - ***POST***
@@ -28,7 +28,7 @@ The backend API is broken down into two modules:
         }
         ```
 
-    - Any combination of columns is permissible
+    - Any combination of columns is permissible (no slicing with ```reatime``` as of ```v0.2.0-alpha```)
     - Any column can be omitted (including multiple)
 
 - **'download'** module (via ```/download/...```):
