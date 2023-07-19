@@ -13,12 +13,12 @@ def test_download_all(app, client):
         conn = get_db()
         cur = conn.cursor()
 
-        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)"
+        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, realtime, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s, %s)"
         values = [
-            (date_one_obj, "MUS", "ST1", "Temp1", 23.003),
-            (date_two_obj, "MUS", "ST2", "RGTPress", 346.32),
-            (date_three_obj, "ÄÄJ", "ST3", "Temp3", 13.231),
-            (date_four_obj, "ÄÄJ", "ST1", "Temp3", 20.09)
+            (date_one_obj, "MUS", "ST1", 12, "Temp1", 23.003),
+            (date_two_obj, "MUS", "ST2", 13, "RGTPress", 346.32),
+            (date_three_obj, "ÄÄJ", "ST3", 14, "Temp3", 13.231),
+            (date_four_obj, "ÄÄJ", "ST1", 15, "Temp3", 20.09)
         ]
 
         cur.executemany(query, values)
@@ -29,11 +29,13 @@ def test_download_all(app, client):
         
         print(res)
 
-        row0 = "id,dtime,farm_id,station_id,parameter_type,parameter_value\n"
-        row1 = "1,2023-04-11 14:04:02.140000,MUS,ST1,Temp1,23.003\n"
-        row2 = "2,2023-04-12 15:32:33.020000,MUS,ST2,RGTPress,346.32\n"
-        row3 = "3,2023-04-13 14:04:02.340000,ÄÄJ,ST3,Temp3,13.231\n"
-        row4 = "4,2023-04-14 12:54:33.920000,ÄÄJ,ST1,Temp3,20.09\n"
+        row0 = "id,dtime,farm_id,station_id,realtime,parameter_type,parameter_value\n"
+        row1 = "1,2023-04-11 14:04:02.140000,MUS,ST1,12,Temp1,23.003\n"
+        row2 = "2,2023-04-12 15:32:33.020000,MUS,ST2,13,RGTPress,346.32\n"
+        row3 = "3,2023-04-13 14:04:02.340000,ÄÄJ,ST3,14,Temp3,13.231\n"
+        row4 = "4,2023-04-14 12:54:33.920000,ÄÄJ,ST1,15,Temp3,20.09\n"
+
+        print('\n'+row0 + row1 + row2 + row3 + row4)
 
         assert res == row0 + row1 + row2 + row3 + row4
 
@@ -54,18 +56,18 @@ def test_download_slice(app, client):
         conn = get_db()
         cur = conn.cursor()
 
-        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)"
+        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, realtime, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s, %s)"
         values = [
-            (date_one_obj, "MUS", "ST1", "Temp1", 23.003),
-            (date_two_obj, "MUS", "ST2", "RGTPress", 346.32),
-            (date_three_obj, "ÄÄJ", "ST3", "Temp3", 13.231),
-            (date_four_obj, "ÄÄJ", "ST1", "Temp3", 20.09),
-            (date_five_obj, "ÄÄJ", "ST1", "Temp1", 20.0),
-            (date_six_obj, "MUS", "ST2", "RGTPress", 11.23),
-            (date_seven_obj, "ÄÄJ", "ST1", "RGTPress", 122.1233),
-            (date_eight_obj, "ÄÄJ", "ST3", "Temp1", 27.233),
-            (date_nine_obj, "MUS", "ST2", "RFID", 121.242),
-            (date_ten_obj, "ÄÄJ", "ST3", "PumpStat", 1)
+            (date_one_obj, "MUS", "ST1", 11, "Temp1", 23.003),
+            (date_two_obj, "MUS", "ST2", 12, "RGTPress", 346.32),
+            (date_three_obj, "ÄÄJ", "ST3", 13, "Temp3", 13.231),
+            (date_four_obj, "ÄÄJ", "ST1", 14, "Temp3", 20.09),
+            (date_five_obj, "ÄÄJ", "ST1", 15, "Temp1", 20.0),
+            (date_six_obj, "MUS", "ST2", 16, "RGTPress", 11.23),
+            (date_seven_obj, "ÄÄJ", "ST1", 17, "RGTPress", 122.1233),
+            (date_eight_obj, "ÄÄJ", "ST3", 18, "Temp1", 27.233),
+            (date_nine_obj, "MUS", "ST2", 19, "RFID", 121.242),
+            (date_ten_obj, "ÄÄJ", "ST3", 20, "PumpStat", 1)
         ]
 
         cur.executemany(query, values)
@@ -80,8 +82,8 @@ def test_download_slice(app, client):
         response = client.post("/download/slice", json=test_params)
         res = response.get_data().decode('UTF-8')
 
-        row0 = "id,dtime,farm_id,station_id,parameter_type,parameter_value\n"
-        row1 = "3,2023-04-13 14:04:02.340000,ÄÄJ,ST3,Temp3,13.231\n"
-        row2 = "6,2023-04-15 10:12:33.920000,MUS,ST2,RGTPress,11.23\n"
-        row3 = "8,2023-04-17 17:23:33.920000,ÄÄJ,ST3,Temp1,27.233\n"
+        row0 = "id,dtime,farm_id,station_id,realtime,parameter_type,parameter_value\n"
+        row1 = "3,2023-04-13 14:04:02.340000,ÄÄJ,ST3,13,Temp3,13.231\n"
+        row2 = "6,2023-04-15 10:12:33.920000,MUS,ST2,16,RGTPress,11.23\n"
+        row3 = "8,2023-04-17 17:23:33.920000,ÄÄJ,ST3,18,Temp1,27.233\n"
         assert res == row0 + row1 + row2 + row3
