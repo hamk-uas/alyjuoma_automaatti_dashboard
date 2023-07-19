@@ -12,14 +12,15 @@ def test_data_all(client, app):
     with app.app_context():
         conn = get_db()
         cur = conn.cursor()
-        cur.execute("INSERT INTO sensor_data (dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)",
-            (date_one_obj, "ÄÄJ", "ST1", "Temp3", 22.453))
+        cur.execute("INSERT INTO sensor_data (dtime, farm_id, station_id, realtime, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s, %s)",
+            (date_one_obj, "ÄÄJ", "ST1", 1234, "Temp3", 22.453))
         conn.commit()
-        cur.execute("INSERT INTO sensor_data (dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)",
-            (date_two_obj, "ÄÄJ", "ST1", "Temp3", 12.009))
+        cur.execute("INSERT INTO sensor_data (dtime, farm_id, station_id, realtime, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s, %s)",
+            (date_two_obj, "ÄÄJ", "ST1", 5678, "Temp3", 12.009))
         conn.commit()
 
         response = client.get('/data/all')
+        print(response)
         r_data = json.loads(response.data)
 
         r_data_sample_one = r_data["result"][0]
@@ -34,6 +35,7 @@ def test_data_all(client, app):
             "dtime": "2023-04-11 14:04:02.140000",
             "farm_id": "ÄÄJ",
             "station_id": "ST1",
+            "realtime": 1234,
             "parameter_type": "Temp3",
             "parameter_value": 22.453
         }
@@ -43,6 +45,7 @@ def test_data_all(client, app):
             "dtime": "2023-04-12 12:54:33.920000",
             "farm_id": "ÄÄJ",
             "station_id": "ST1",
+            "realtime": 5678,
             "parameter_type": "Temp3",
             "parameter_value": 12.009
         }
@@ -51,7 +54,7 @@ def test_data_all(client, app):
 @freeze_time("2023-05-01 12:34:56.789012")
 def test_data_write(client, app):
     with app.app_context():
-        response = client.post('/data/write', data='ÄÄJ;ST1;Temp3;22.453')
+        response = client.post('/data/write', data='ÄÄJ;ST1;12;Temp3;22.453')
 
         assert response.status_code == 200
 
@@ -65,7 +68,7 @@ def test_data_write(client, app):
         data = list(data[0])
         data[1] = datetime.datetime.strftime(data[1], '%Y-%m-%d %H:%M:%S.%f')
 
-        assert data == [1, "2023-05-01 12:34:56.789012", "ÄÄJ", "ST1", "Temp3", 22.453]
+        assert data == [1, "2023-05-01 12:34:56.789012", "ÄÄJ", "ST1", 12, "Temp3", 22.453]
 
 
 def test_data_slice(client, app):
@@ -85,18 +88,18 @@ def test_data_slice(client, app):
         conn = get_db()
         cur = conn.cursor()
 
-        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)"
+        query = "INSERT INTO sensor_data(dtime, farm_id, station_id, realtime, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s, %s)"
         values = [
-            (date_one_obj, "MUS", "ST1", "Temp1", 23.003),
-            (date_two_obj, "MUS", "ST2", "RGTPress", 346.32),
-            (date_three_obj, "ÄÄJ", "ST3", "Temp3", 13.231),
-            (date_four_obj, "ÄÄJ", "ST1", "Temp3", 20.09),
-            (date_five_obj, "ÄÄJ", "ST1", "Temp1", 20.0),
-            (date_six_obj, "MUS", "ST2", "RGTPress", 11.23),
-            (date_seven_obj, "ÄÄJ", "ST1", "RGTPress", 122.1233),
-            (date_eight_obj, "ÄÄJ", "ST3", "Temp1", 27.233),
-            (date_nine_obj, "MUS", "ST2", "RFID", 121.242),
-            (date_ten_obj, "ÄÄJ", "ST3", "PumpStat", 1)
+            (date_one_obj, "MUS", "ST1", 12, "Temp1", 23.003),
+            (date_two_obj, "MUS", "ST2", 13, "RGTPress", 346.32),
+            (date_three_obj, "ÄÄJ", "ST3", 14, "Temp3", 13.231),
+            (date_four_obj, "ÄÄJ", "ST1", 15, "Temp3", 20.09),
+            (date_five_obj, "ÄÄJ", "ST1", 16, "Temp1", 20.0),
+            (date_six_obj, "MUS", "ST2", 17, "RGTPress", 11.23),
+            (date_seven_obj, "ÄÄJ", "ST1", 18, "RGTPress", 122.1233),
+            (date_eight_obj, "ÄÄJ", "ST3", 19, "Temp1", 27.233),
+            (date_nine_obj, "MUS", "ST2", 20, "RFID", 121.242),
+            (date_ten_obj, "ÄÄJ", "ST3", 21, "PumpStat", 1)
         ]
 
         cur.executemany(query, values)
@@ -121,6 +124,7 @@ def test_data_slice(client, app):
                 'dtime': "2023-04-13 14:04:02.340000",
                 'farm_id': "ÄÄJ",
                 'station_id': "ST3",
+                'realtime': 14,
                 'parameter_type': "Temp3",
                 'parameter_value': 13.231    
             }, 
@@ -129,6 +133,7 @@ def test_data_slice(client, app):
                 'dtime': "2023-04-15 10:12:33.920000",
                 'farm_id': "MUS",
                 'station_id': "ST2",
+                'realtime': 17,
                 'parameter_type': "RGTPress",
                 'parameter_value': 11.23   
             }, 
@@ -137,6 +142,7 @@ def test_data_slice(client, app):
                 'dtime': "2023-04-17 17:23:33.920000",
                 'farm_id': "ÄÄJ",
                 'station_id': "ST3",
+                'realtime': 19,
                 'parameter_type': "Temp1",
                 'parameter_value': 27.233    
             }
