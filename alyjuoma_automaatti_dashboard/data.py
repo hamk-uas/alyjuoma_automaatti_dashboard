@@ -1,4 +1,4 @@
-import functools
+from zoneinfo import ZoneInfo
 import datetime
 
 from flask import (
@@ -18,7 +18,7 @@ def data_write():
     data_string = request.data.decode('utf8')
     farm_id, station_id, parameter_type, parameter_value = data_string.split(';')
 
-    dtime = datetime.datetime.now()
+    dtime = datetime.datetime.now(ZoneInfo('Europe/Helsinki'))
     parameter_value = float(parameter_value)
 
     print(dtime, farm_id, station_id, parameter_type, parameter_value)
@@ -36,7 +36,7 @@ def data_write():
     return jsonify(
         success=True,
         inserted=[
-        dtime,
+        datetime.datetime.strftime(dtime, '%Y-%m-%d %H:%M:%S.%f'),
         farm_id,
         station_id,
         parameter_type,
