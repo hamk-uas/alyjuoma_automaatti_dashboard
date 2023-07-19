@@ -154,7 +154,8 @@ def data_slice(s=None):
             "farm_id": line[2],
             "station_id": line[3],
             "parameter_type": line[4],
-            "parameter_value": line[5]
+            "parameter_value": line[5],
+            "realtime": line[6]
         })
     
 
