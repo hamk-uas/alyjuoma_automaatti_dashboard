@@ -16,19 +16,31 @@ def data_write():
     db = get_db()
 
     data_string = request.data.decode('utf8')
-    farm_id, station_id, parameter_type, parameter_value = data_string.split(';')
+    data_split = data_string.split(';')
+    if len(data_split) == 4:
+        farm_id = data_split[0]
+        station_id = data_split[1]
+        parameter_type = data_split[2]
+        parameter_value = data_split[3]
+    elif len(data_split) == 5:
+        farm_id = data_split[0]
+        station_id = data_split[1]
+        realtime = data_split[2]
+        parameter_type = data_split[3]
+        parameter_value = data_split[4]
 
     dtime = datetime.datetime.now(ZoneInfo('Europe/Helsinki'))
     parameter_value = float(parameter_value)
+    realtime = int(realtime)
 
-    print(dtime, farm_id, station_id, parameter_type, parameter_value)
+    print(dtime, farm_id, station_id, realtime, parameter_type, parameter_value)
 
 
     cur = db.cursor()
 
     cur.execute(
-        "INSERT INTO sensor_data (dtime, farm_id, station_id, parameter_type, parameter_value) VALUES (%s, %s, %s, %s, %s)",
-        (dtime, farm_id, station_id, parameter_type, parameter_value)
+        "INSERT INTO sensor_data (dtime, farm_id, station_id, parameter_type, parameter_value, realtime) VALUES (%s, %s, %s, %s, %s, %s)",
+        (dtime, farm_id, station_id, parameter_type, parameter_value, realtime)
     )
 
     db.commit()
@@ -39,6 +51,7 @@ def data_write():
         datetime.datetime.strftime(dtime, '%Y-%m-%d %H:%M:%S.%f'),
         farm_id,
         station_id,
+        realtime,
         parameter_type,
         parameter_value
         ])
@@ -61,7 +74,8 @@ def data_all():
             "farm_id": line[2],
             "station_id": line[3],
             "parameter_type": line[4],
-            "parameter_value": line[5]
+            "parameter_value": line[5],
+            "realtime": line[6],
         })
     
     return jsonify(result=data)
