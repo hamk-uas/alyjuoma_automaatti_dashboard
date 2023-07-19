@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'flask',
-        'mysql-connector-python',
+        'mysql-connector-python==8.0.20',
         'freezegun',
         'flask-cors',
     ],
