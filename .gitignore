@@ -17,3 +17,5 @@ build/
 
 # api test
 api_test/
+
+*.csv.gz
