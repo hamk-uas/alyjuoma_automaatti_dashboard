@@ -33,7 +33,7 @@ def data_write():
     parameter_value = float(parameter_value)
     realtime = int(realtime)
 
-    print(dtime, farm_id, station_id, realtime, parameter_type, parameter_value)
+    # print(dtime, farm_id, station_id, realtime, parameter_type, parameter_value)
 
 
     cur = db.cursor()
@@ -81,6 +81,30 @@ def data_all():
     return jsonify(result=data)
 
 
+
+@bp.route('/last/<n>', methods=['GET'])
+def data_last(n):
+    db = get_db()
+    cur = db.cursor()
+    n = int(n)
+    print(n, type(n))
+    cur.execute("SELECT * FROM sensor_data ORDER BY id DESC LIMIT %s", (n*60,))
+
+    result = cur.fetchall()
+    data = []
+
+    for line in result:
+        data.append({
+            "id": line[0],
+            "dtime": datetime.datetime.strftime(line[1], '%Y-%m-%d %H:%M:%S.%f'),
+            "farm_id": line[2],
+            "station_id": line[3],
+            "parameter_type": line[4],
+            "parameter_value": line[5],
+            "realtime": line[6],
+        })
+    
+    return jsonify(result=data)
 
 @bp.route('/slice', methods=['POST'])
 def data_slice(s=None):
