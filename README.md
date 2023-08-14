@@ -14,6 +14,8 @@ The backend API is broken down into two modules:
     - Data **must** follow the ```b'farm_id;station_id;realtime;parameter_type;parameter_value'``` format
   - ```'/data/all'``` - ***GET***
     - Returns all data from database as JSON response
+  - ```'/data/last/<n>'``` - ***GET***
+    - Returns data entered in the last `n` minutes
   - ```'/data/slice'``` - ***POST***
     - Returns a slice of data from database based on format defined in JSON request as a JSON response
     - Requests **must** follow the format:
