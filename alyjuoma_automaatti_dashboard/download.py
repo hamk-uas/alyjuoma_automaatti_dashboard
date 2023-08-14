@@ -9,6 +9,9 @@ from alyjuoma_automaatti_dashboard.data import (
 
 from alyjuoma_automaatti_dashboard.util import downloadable
 
+import gzip
+import shutil
+
 
 bp = Blueprint('download', __name__, url_prefix='/download')
 
@@ -18,8 +21,12 @@ def download_all():
     data = data["result"]
 
     downloadable(data)
-    response = make_response(open('data.csv').read())
-    response.headers['Content-Disposition'] = 'attachment; filename=data.csv'
+    with open('data.csv', 'rb') as f_in, gzip.open('data.csv.gz', 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+
+    response = make_response(open('data.csv.gz', 'rb').read())
+    response.headers['Content-Encoding'] = 'gzip'
+    response.headers['Content-Disposition'] = 'attachment; filename=data.csv.gz'
     response.mimetype = 'text/csv'
 
     os.remove('data.csv')
@@ -34,8 +41,12 @@ def download_slice():
     data = data["result"]
 
     downloadable(data)
-    response = make_response(open('data.csv').read())
-    response.headers['Content-Disposition'] = 'attachment; filename=data.csv'
+    with open('data.csv', 'rb') as f_in, gzip.open('data.csv.gz', 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+
+    response = make_response(open('data.csv.gz', 'rb').read())
+    response.headers['Content-Encoding'] = 'gzip'
+    response.headers['Content-Disposition'] = 'attachment; filename=data.csv.gz'
     response.mimetype = 'text/csv'
 
     os.remove('data.csv')
