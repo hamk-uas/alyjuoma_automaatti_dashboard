@@ -17,23 +17,14 @@ def data_write():
 
     data_string = request.data.decode('utf8')
     data_split = data_string.split(';')
-    if len(data_split) == 4:
-        farm_id = data_split[0]
-        station_id = data_split[1]
-        parameter_type = data_split[2]
-        parameter_value = data_split[3]
-    elif len(data_split) == 5:
-        farm_id = data_split[0]
-        station_id = data_split[1]
-        realtime = data_split[2]
-        parameter_type = data_split[3]
-        parameter_value = data_split[4]
 
+
+    farm_id = data_split[0]
+    station_id = data_split[1]
+    realtime = int(data_split[2])
+    parameter_type = data_split[3]
+    parameter_value = float(data_split[4])
     dtime = datetime.datetime.now(ZoneInfo('Europe/Helsinki'))
-    parameter_value = float(parameter_value)
-    realtime = int(realtime)
-
-    # print(dtime, farm_id, station_id, realtime, parameter_type, parameter_value)
 
 
     cur = db.cursor()
